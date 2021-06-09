@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Time Circles</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script>
+        $(document).ready(function (){
+            let socket = io.connect(); // socket.io connection
+            let name = prompt("What is your name? "); // creating a new user
+            if(name == null || name == ''){ // guest user
+                name = 'Guest';
+            } else {
+                name = name;
+            }
+            // user that has logged in
+            console.log(name);
+            $("#user_logged_in").html("Username: " + name);
+			socket.emit("new_user", {name:name});
+            $('.container').css('display', 'flex');
+            //user join room
+            socket.on("user_entered_room", function(data) {
+                let html = ``;
+                for(let i = 0; i < data.length; i++){
+                    html += `<li class='user'>${data[i].name}</li>`;
+                }
+                $("#users-list").html(html);
+            });
+            socket.on("user_joined_room", function(data) {
+                $('#users_room').append("<li class='user-joined-room'>"+data+" has joined the room."+"</li>");
+            });
+            //user disconnect
+            socket.on('user_disconnect', function(data){
+                $("#users_room").append("<li class='user-left-room'>"+data+" has left the room."+"</li>");
+            });
+            //reset button
+            $("#reset").on("click", function(){
+                    location.reload();;
+            });
+            //colors
+            $("#user-circle-container").on("click", function(data) {  //clicking the button will set it to color yellow
+                if(typeof colorCircle == 'undefined'){
+                    colorCircle = "yellow";
+                }
+                $("#yellow").on("click", function(){
+                    colorCircle = "yellow";
+                });
+                $("#green").on("click", function(){
+                    colorCircle = "green";
+                });
+                $("#blue").on("click", function(){
+                    colorCircle = "blue";
+                });
+                $("#pink").on("click", function(){
+                    colorCircle = "pink";
+                });
+                socket.emit("colors_clicked", { 
+					color: colorCircle,
+                    x: data.clientX,
+                    y: data.clientY
+				});
+				return false;
+            });
+            socket.on("user_create_circle", function(data) {
+                $("#user-circle").append(data.response);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div id="users-container">
+            <ul id="users_room"></ul>
+            <p>Members in the room:</p>
+            <ul id="users-list"></ul>
+        </div>
+        <div id="circles-container">
+            <h2>Real Time Colors</h2>
+            <button id="yellow"></button>
+            <button id="green"></button>
+            <button id="blue"></button>
+            <button id="pink"></button>
+            <button id="reset">Reset</button>
+            <div id="user-circle-container">
+                <div id="user-circle">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="user_logged_in"></div>
+</body>
+</html>

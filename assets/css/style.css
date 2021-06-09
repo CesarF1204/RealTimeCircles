@@ -1,0 +1,67 @@
+.container {
+    display: none;
+    flex-direction: row-reverse;
+    justify-content: space-around;
+}
+#users-container {
+    margin-top: 180px;
+    border: 2px solid black;
+    padding: 10px 50px;
+}
+button {
+    border: 1px solid black;
+    width: 100px;
+    padding: 12px 20px;
+    box-shadow: 3px 3px #000;
+    color: white;
+    cursor: pointer;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 20px;
+}
+button#yellow {
+    background-color: yellow;
+}
+button#green {
+    background-color: green;
+}
+button#blue {
+    background-color: blue;
+}
+button#pink {
+    background-color: pink;
+}
+button#reset {
+    background-color: red;
+}
+button:hover {
+    transform: scale(1.05);
+    transition: 0.3s ease;
+}
+
+#user-circle-container {
+    border: 3px solid black;
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+}
+.username, h2, #user_logged_in{
+    text-align: center;
+}
+#users-list li {
+    list-style: none;
+}
+#users-list li::before {
+    content: "\2022";
+    color: green;
+    font-weight: bold;
+    display: inline-block; 
+    width: 1em;
+    margin-left: -1em;
+}
+.user-joined-room {
+    color: green;
+}
+.user-left-room {
+    color: red;
+}
